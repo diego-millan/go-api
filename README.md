@@ -28,6 +28,29 @@ go-api/
   docker-compose.yml             -- container PostgreSQL
 ```
 
+## Rotas
+
+| Método | Rota        | Descrição          |
+|--------|------------|--------------------|
+| GET    | `/ping`    | Health check       |
+| GET    | `/products` | Listar produtos    |
+| POST   | `/product`  | Criar um produto   |
+
+### Exemplos
+
+```sh
+# health check
+curl http://localhost:8001/ping
+
+# listar produtos
+curl http://localhost:8001/products
+
+# criar um produto
+curl -X POST http://localhost:8001/product \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Notebook", "price": 3500.00}'
+```
+
 ## Comandos do tutorial
 
 ### Inicializar o projeto
@@ -60,15 +83,6 @@ go mod tidy
 go run cmd/main.go
 ```
 
-### Testar os endpoints
-
-```sh
-# health check
-curl http://localhost:8001/ping
-
-# listar produtos
-curl http://localhost:8001/products
-```
 
 ---
 
