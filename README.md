@@ -109,6 +109,16 @@ docker ps
 docker images
 ```
 
+### Parar os containers
+
+```sh
+# parar sem remover
+docker compose stop
+
+# parar e remover containers
+docker compose down
+```
+
 
 ---
 
