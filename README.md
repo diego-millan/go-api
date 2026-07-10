@@ -7,7 +7,7 @@ REST API completa com Go, Gin e PostgreSQL.
 - **Go** 1.26
 - **Gin** — HTTP web framework
 - **PostgreSQL** 12 — banco de dados
-- **Docker Compose** — container do banco
+- **Docker Compose** — containers da aplicação e banco
 
 ## Estrutura do projeto
 
@@ -25,16 +25,18 @@ go-api/
     product_repository.go        -- queries SQL
   usecase/
     products_usecase.go          -- lógica de negócio
-  docker-compose.yml             -- container PostgreSQL
+  Dockerfile                     -- build da imagem
+  docker-compose.yml             -- containers app + banco
 ```
 
 ## Rotas
 
-| Método | Rota        | Descrição          |
-|--------|------------|--------------------|
-| GET    | `/ping`    | Health check       |
-| GET    | `/products` | Listar produtos    |
-| POST   | `/product`  | Criar um produto   |
+| Método | Rota                  | Descrição               |
+|--------|-----------------------|-------------------------|
+| GET    | `/ping`               | Health check            |
+| GET    | `/products`           | Listar produtos         |
+| POST   | `/product`            | Criar um produto        |
+| GET    | `/product/:productId` | Buscar produto por ID   |
 
 ### Exemplos
 
@@ -49,6 +51,9 @@ curl http://localhost:8001/products
 curl -X POST http://localhost:8001/product \
   -H "Content-Type: application/json" \
   -d '{"name": "Notebook", "price": 3500.00}'
+
+# buscar produto por id
+curl http://localhost:8001/product/1
 ```
 
 ## Comandos do tutorial
@@ -59,11 +64,20 @@ curl -X POST http://localhost:8001/product \
 go mod init go-api
 ```
 
-### Subir o banco com Docker
+### Instalar dependências
+
+```sh
+go mod tidy
+```
+
+### Subir app e banco com Docker Compose
 
 ```sh
 docker compose up -d
 ```
+
+> O `docker-compose.yml` sobe dois containers: `go-app` (a API) e `go_db` (PostgreSQL).
+> A aplicação usa a variável `DB_HOST=go_db` para se conectar ao banco na rede Docker.
 
 ### Criar a tabela no banco
 
@@ -71,16 +85,28 @@ docker compose up -d
 docker exec -i go_db psql -U postgres -d postgres < db/init.sql
 ```
 
-### Instalar dependências
-
-```sh
-go mod tidy
-```
-
-### Rodar a aplicação
+### Rodar a aplicação localmente (sem Docker)
 
 ```sh
 go run cmd/main.go
+```
+
+> Quando roda localmente, `DB_HOST` não está definida e o fallback é `localhost`.
+
+### Build da imagem Docker
+
+```sh
+docker build -t go-api-tutorial .
+```
+
+### Verificar containers e imagens
+
+```sh
+# containers em execução
+docker ps
+
+# imagens disponíveis
+docker images
 ```
 
 
